@@ -526,3 +526,34 @@ document.getElementById('formBudget').addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', loadDashboard);
+
+
+
+// Botão de Sincronizar Mercado
+const btnSyncApi = document.getElementById('btnSyncApi');
+if(btnSyncApi) {
+    btnSyncApi.addEventListener('click', async () => {
+        btnSyncApi.textContent = 'Sincronizando...';
+        btnSyncApi.classList.add('opacity-50', 'cursor-not-allowed');
+        
+        try {
+            const res = await fetch(`${API_BASE}/investments/sync-prices`, {
+                method: 'POST',
+                headers: getAuthHeaders()
+            });
+            const data = await res.json();
+            
+            if(res.ok) {
+                alert(`Mercado Sincronizado!\n${data.updated} ativos atualizados.`);
+                loadDashboard(); // Recarrega os KPIs
+            } else {
+                alert('Erro ao sincronizar: ' + (data.error || 'Desconhecido'));
+            }
+        } catch(err) {
+            alert('Erro de conexão com o servidor ao sincronizar.');
+        } finally {
+            btnSyncApi.textContent = 'Sincronizar Mercado';
+            btnSyncApi.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    });
+}
