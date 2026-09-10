@@ -1,0 +1,11 @@
+Flask
+python-dotenv
+pandas
+cryptography
+yfinance
+requests
+Flask-Cors
+
+python-dateutil
+PyJWT
+gunicorn
