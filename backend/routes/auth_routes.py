@@ -43,7 +43,8 @@ def register():
             ('Lazer', 'expense', '#3b82f6'),
             ('Transporte', 'expense', '#8b5cf6'),
             ('Esportes', 'expense', '#14b8a6'),
-            ('Assinaturas e Serviços', 'expense', '#ec4899')
+            ('Assinaturas e Serviços', 'expense', '#ec4899'),
+            ('Saúde', 'expense', '#ef4444')
         ]
         for c in default_cats:
             cursor.execute("INSERT INTO categories (user_id, name, type, color) VALUES (?, ?, ?, ?)", (user_id, c[0], c[1], c[2]))
