@@ -125,7 +125,7 @@ function toggleFormMode() {
         transContainer.classList.remove('hidden');
         document.getElementById('transfer_account_id').required = true;
         instContainer.classList.add('hidden');
-        if (flagsContainer) flagsContainer.classList.add('hidden');
+        if (flagsContainer) flagsContainer.style.display = 'none';
         labelAcc.innerText = "Conta (Origem)";
     } else {
         catContainer.classList.remove('hidden');
@@ -135,11 +135,11 @@ function toggleFormMode() {
         
         if (type === 'expense') {
             instContainer.classList.remove('hidden');
-            if (flagsContainer) flagsContainer.classList.remove('hidden');
+            if (flagsContainer) flagsContainer.style.display = '';
             labelAcc.innerText = "Conta de Saída (Quem pagou?)";
         } else {
             instContainer.classList.add('hidden');
-            if (flagsContainer) flagsContainer.classList.add('hidden');
+            if (flagsContainer) flagsContainer.style.display = 'none';
             labelAcc.innerText = "Conta de Entrada (Onde caiu?)";
         }
     }
