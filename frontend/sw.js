@@ -22,8 +22,17 @@ self.addEventListener('fetch', event => {
   }
   
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then(networkResponse => {
+        // Salva cópia nova no cache
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
+        });
+      })
+      .catch(() => {
+        // Se falhar (offline), busca no cache
+        return caches.match(event.request);
+      })
   );
 });

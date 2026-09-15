@@ -27,13 +27,23 @@ def register():
         user_id = cursor.lastrowid
         
         # Injetar categorias e conta padrão para novos usuários
-        cursor.execute("INSERT INTO accounts (user_id, name, account_type, initial_balance) VALUES (?, 'Carteira (Dinheiro)', 'checking', 0.0)", (user_id,))
+        accounts = [
+            ('Nubank', 'checking', 0.0),
+            ('PicPay', 'checking', 0.0),
+            ('Mercado Pago', 'checking', 0.0)
+        ]
+        for acc in accounts:
+            cursor.execute("INSERT INTO accounts (user_id, name, account_type, initial_balance) VALUES (?, ?, ?, ?)", (user_id, acc[0], acc[1], acc[2]))
+            
         default_cats = [
             ('Salário', 'income', '#10b981'),
+            ('Pagamentos de Terceiros', 'income', '#34d399'),
             ('Alimentação', 'expense', '#ef4444'),
             ('Moradia', 'expense', '#f59e0b'),
             ('Lazer', 'expense', '#3b82f6'),
-            ('Transporte', 'expense', '#8b5cf6')
+            ('Transporte', 'expense', '#8b5cf6'),
+            ('Esportes', 'expense', '#14b8a6'),
+            ('Assinaturas e Serviços', 'expense', '#ec4899')
         ]
         for c in default_cats:
             cursor.execute("INSERT INTO categories (user_id, name, type, color) VALUES (?, ?, ?, ?)", (user_id, c[0], c[1], c[2]))

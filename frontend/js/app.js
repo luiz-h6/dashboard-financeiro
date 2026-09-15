@@ -136,11 +136,11 @@ function toggleFormMode() {
         if (type === 'expense') {
             instContainer.classList.remove('hidden');
             if (flagsContainer) flagsContainer.style.display = '';
-            labelAcc.innerText = "Conta de Saída (Quem pagou?)";
+            labelAcc.innerText = "Conta de Saída";
         } else {
             instContainer.classList.add('hidden');
             if (flagsContainer) flagsContainer.style.display = 'none';
-            labelAcc.innerText = "Conta de Entrada (Onde caiu?)";
+            labelAcc.innerText = "Conta de Entrada";
         }
     }
 }
@@ -178,7 +178,7 @@ document.getElementById('formTransaction').addEventListener('submit', async (e) 
         e.target.reset();
         toggleFormMode();
         loadDashboard();
-        switchTab('dashboard');
+        // Permanece na mesma tela para cadastrar outras
     } catch(err) { alert(err.message); } 
     finally { btn.textContent = "Registrar Movimentação"; }
 });
