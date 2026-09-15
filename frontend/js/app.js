@@ -84,21 +84,41 @@ async function loadFormDependencies(accSelectId, catSelectId) {
     await fetchGlobals();
     const accSelect = document.getElementById(accSelectId);
     accSelect.innerHTML = '<option value="">Selecione uma Conta...</option>';
-    allAccounts.forEach(a => { accSelect.innerHTML += `<option value="${a.id}">${a.name}</option>`; });
+    
+    // Filtro de unicidade para evitar contas duplicadas pelo nome
+    const seenAccounts = new Set();
+    allAccounts.forEach(a => { 
+        if(!seenAccounts.has(a.name)) {
+            seenAccounts.add(a.name);
+            accSelect.innerHTML += `<option value="${a.id}">${a.name}</option>`; 
+        }
+    });
     
     // Para conta destino (Transferências)
     const transferSelect = document.getElementById('transfer_account_id');
     if(transferSelect) {
         transferSelect.innerHTML = '<option value="">Selecione a Conta Destino...</option>';
-        allAccounts.forEach(a => { transferSelect.innerHTML += `<option value="${a.id}">${a.name}</option>`; });
+        const seenTransfer = new Set();
+        allAccounts.forEach(a => { 
+            if(!seenTransfer.has(a.name)) {
+                seenTransfer.add(a.name);
+                transferSelect.innerHTML += `<option value="${a.id}">${a.name}</option>`; 
+            }
+        });
     }
 
     const catSelect = document.getElementById(catSelectId);
     if(catSelectId === 'category_id') {
-        toggleFormMode(); // Aplica os filtros corret8s e N/A
+        toggleFormMode(); // Aplica os filtros corretos e N/A
     } else {
         catSelect.innerHTML = '<option value="">Selecione uma Categoria...</option>';
-        allCategories.forEach(c => { catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
+        const seenCats = new Set();
+        allCategories.forEach(c => { 
+            if(!seenCats.has(c.name)) {
+                seenCats.add(c.name);
+                catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`; 
+            }
+        });
     }
 }
 
@@ -114,8 +134,12 @@ function toggleFormMode() {
     // Atualiza opções de categoria baseadas no tipo selecionado
     if (catSelect && allCategories) {
         catSelect.innerHTML = '<option value="0">N/A (Sem Categoria)</option>';
+        const seenCatsMode = new Set();
         allCategories.filter(c => c.type === type || type === 'transfer').forEach(c => { 
-            catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`; 
+            if(!seenCatsMode.has(c.name)) {
+                seenCatsMode.add(c.name);
+                catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`; 
+            }
         });
     }
 
@@ -487,8 +511,12 @@ async function loadBudgets() {
         await fetchGlobals();
         const catSelect = document.getElementById('budget_category_id');
         catSelect.innerHTML = '<option value="">Selecione a Categoria...</option>';
+        const seenBudgetCats = new Set();
         allCategories.filter(c => c.type === 'expense').forEach(c => {
-            catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+            if(!seenBudgetCats.has(c.name)) {
+                seenBudgetCats.add(c.name);
+                catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+            }
         });
 
         const response = await fetch(`${API_BASE}/analytics/dashboard`, { headers: getAuthHeaders() });
