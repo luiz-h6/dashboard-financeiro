@@ -103,7 +103,17 @@ function toggleFormMode() {
     const catContainer = document.getElementById('container_category');
     const transContainer = document.getElementById('container_transfer');
     const instContainer = document.getElementById('container_installments');
+    const flagsContainer = document.getElementById('container_flags');
     const labelAcc = document.getElementById('label_account_id');
+    const catSelect = document.getElementById('category_id');
+
+    // Atualiza opções de categoria baseadas no tipo selecionado
+    if (catSelect && allCategories) {
+        catSelect.innerHTML = '<option value="0">N/A (Sem Categoria)</option>';
+        allCategories.filter(c => c.type === type || type === 'transfer').forEach(c => { 
+            catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`; 
+        });
+    }
 
     if (type === 'transfer') {
         catContainer.classList.add('hidden');
@@ -111,17 +121,20 @@ function toggleFormMode() {
         transContainer.classList.remove('hidden');
         document.getElementById('transfer_account_id').required = true;
         instContainer.classList.add('hidden');
+        if (flagsContainer) flagsContainer.classList.add('hidden');
         labelAcc.innerText = "Conta (Origem)";
     } else {
         catContainer.classList.remove('hidden');
-        document.getElementById('category_id').required = true;
+        document.getElementById('category_id').required = false; // Permite N/A
         transContainer.classList.add('hidden');
         document.getElementById('transfer_account_id').required = false;
         
         if (type === 'expense') {
             instContainer.classList.remove('hidden');
+            if (flagsContainer) flagsContainer.classList.remove('hidden');
         } else {
             instContainer.classList.add('hidden');
+            if (flagsContainer) flagsContainer.classList.add('hidden');
         }
         labelAcc.innerText = "Conta Financeira";
     }
@@ -142,7 +155,7 @@ document.getElementById('formTransaction').addEventListener('submit', async (e) 
         date: document.getElementById('date').value,
         description: document.getElementById('description').value,
         account_id: parseInt(document.getElementById('account_id').value),
-        category_id: type === 'transfer' ? null : parseInt(document.getElementById('category_id').value),
+                category_id: type === 'transfer' ? null : (parseInt(document.getElementById('category_id').value) || 0),
         transfer_account_id: type === 'transfer' ? parseInt(document.getElementById('transfer_account_id').value) : null,
         total_installments: type === 'expense' ? parseInt(document.getElementById('total_installments').value) : 1,
         is_essential: document.getElementById('is_essential').checked ? 1 : 0,

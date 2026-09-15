@@ -12,6 +12,20 @@ def create_transaction(data):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
     
+    user_id = data['user_id']
+    cat_id = cat_id
+    tx_type = data['type']
+    
+    # Lidar com Categoria "N/A" (0 ou null)
+    if tx_type != 'transfer' and (not cat_id or cat_id == 0):
+        cursor.execute("SELECT id FROM categories WHERE user_id = ? AND type = ? AND name = 'Geral'", (user_id, tx_type))
+        row = cursor.fetchone()
+        if row:
+            cat_id = row['id']
+        else:
+            cursor.execute("INSERT INTO categories (user_id, name, type, color) VALUES (?, ?, ?, ?)", (user_id, 'Geral', tx_type, '#94a3b8'))
+            cat_id = cursor.lastrowid
+
     total_installments = int(data.get('total_installments', 1))
     base_date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
     amount_per_installment = round(float(data['amount']) / total_installments, 2)
@@ -25,7 +39,7 @@ def create_transaction(data):
             desc = f"{data.get('description', '')} ({i+1}/{total_installments})"
             
         cursor.execute(sql, (
-            data['user_id'], data['account_id'], data.get('category_id'), data['type'], 
+            data['user_id'], data['account_id'], cat_id, data['type'], 
             amount_per_installment, installment_date.strftime("%Y-%m-%d"), desc, 
             data.get('is_essential', 0), data.get('is_fixed', 0),
             data.get('status', 'paid'), i+1, total_installments,
