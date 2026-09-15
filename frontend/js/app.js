@@ -94,8 +94,12 @@ async function loadFormDependencies(accSelectId, catSelectId) {
     }
 
     const catSelect = document.getElementById(catSelectId);
-    catSelect.innerHTML = '<option value="">Selecione uma Categoria...</option>';
-    allCategories.forEach(c => { catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
+    if(catSelectId === 'category_id') {
+        toggleFormMode(); // Aplica os filtros corret8s e N/A
+    } else {
+        catSelect.innerHTML = '<option value="">Selecione uma Categoria...</option>';
+        allCategories.forEach(c => { catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
+    }
 }
 
 function toggleFormMode() {
@@ -132,11 +136,12 @@ function toggleFormMode() {
         if (type === 'expense') {
             instContainer.classList.remove('hidden');
             if (flagsContainer) flagsContainer.classList.remove('hidden');
+            labelAcc.innerText = "Conta de Saída (Quem pagou?)";
         } else {
             instContainer.classList.add('hidden');
             if (flagsContainer) flagsContainer.classList.add('hidden');
+            labelAcc.innerText = "Conta de Entrada (Onde caiu?)";
         }
-        labelAcc.innerText = "Conta Financeira";
     }
 }
 
