@@ -24,6 +24,20 @@ def register():
     try:
         cursor.execute("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)", 
                        (name, email, hashed_password))
+        user_id = cursor.lastrowid
+        
+        # Injetar categorias e conta padrão para novos usuários
+        cursor.execute("INSERT INTO accounts (user_id, name, account_type, initial_balance) VALUES (?, 'Carteira (Dinheiro)', 'checking', 0.0)", (user_id,))
+        default_cats = [
+            ('Salário', 'income', '#10b981'),
+            ('Alimentação', 'expense', '#ef4444'),
+            ('Moradia', 'expense', '#f59e0b'),
+            ('Lazer', 'expense', '#3b82f6'),
+            ('Transporte', 'expense', '#8b5cf6')
+        ]
+        for c in default_cats:
+            cursor.execute("INSERT INTO categories (user_id, name, type, color) VALUES (?, ?, ?, ?)", (user_id, c[0], c[1], c[2]))
+            
         conn.commit()
         return jsonify({'message': 'User registered successfully'}), 201
     except Exception as e:
